@@ -15,13 +15,15 @@
 
     "compute": [
         {
-            "file": "marchingCubes",
+            "name": "marchingCubes",
             "variants": [
                 {"outputFile": "marchingCubes_init.spv", "defines": ["init"]},
                 {"outputFile": "marchingCubes_add.spv", "defines": ["add"]},
-                {"outputFile": "marchingCubes_subtract.spv", "defines": ["subtract"]}
+                {"outputFile": "marchingCubes_subtract.spv", "defines": ["subtract"]},
+                {"outputFile": "marchingCubes_multi.spv", "defines": ["subtract", "add", "naboo"]}
             ]
         },
-        "raycast"
+        "raycast",
+        "nonexistent"
     ]
 }

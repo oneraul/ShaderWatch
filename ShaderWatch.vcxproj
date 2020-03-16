@@ -155,10 +155,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShaderWatch.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ColoredConsole.h" />
     <ClInclude Include="include\shaderc\shaderc.hpp" />
+    <ClInclude Include="Shader.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
