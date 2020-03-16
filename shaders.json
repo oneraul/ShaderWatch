@@ -1,0 +1,27 @@
+{
+    "vertex": [
+        "color",
+        "fog",
+        "gourand",
+        "texture"
+    ],
+
+    "fragment": [
+        "color",
+        "fog",
+        "gourand",
+        "texture"
+    ],
+
+    "compute": [
+        {
+            "file": "marchingCubes",
+            "variants": [
+                {"outputFile": "marchingCubes_init.spv", "defines": ["init"]},
+                {"outputFile": "marchingCubes_add.spv", "defines": ["add"]},
+                {"outputFile": "marchingCubes_subtract.spv", "defines": ["subtract"]}
+            ]
+        },
+        "raycast"
+    ]
+}
