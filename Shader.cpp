@@ -54,7 +54,7 @@ void Shader::compile(const ColoredConsole& console) const
 {
 	if (!exists())
 	{
-		console.cout("Not found: " + input.filename().string() + "\n", ColoredConsole::Color::Red);
+		console.cout("Not found: " + input.filename().string(), ColoredConsole::Color::Red);
 			return;
 	}
 
@@ -62,11 +62,11 @@ void Shader::compile(const ColoredConsole& console) const
 	{
 		if (config.upToDate(input))
 		{
-			console.cout("Up to date: " + config.output.filename().string() + "\n", ColoredConsole::Color::Grey);
+			console.cout("Up to date: " + config.output.filename().string(), ColoredConsole::Color::Grey);
 		}
 		else
 		{
-			console.cout("Compiling: " + config.output.filename().string() + "\n", ColoredConsole::Color::Green);
+			console.cout("Compiling: " + config.output.filename().string(), ColoredConsole::Color::Green);
 		}
 	}
 }
