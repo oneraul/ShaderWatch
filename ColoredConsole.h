@@ -3,18 +3,6 @@
 #include <Windows.h>
 #include <iostream>
 
-#define intense FOREGROUND_INTENSITY |
-#define background * 16
-#define black 0
-#define blue 1
-#define green 2
-#define cyan 3
-#define red 4
-#define purple 5
-#define yellow 6
-#define white 7
-#define grey intense black
-
 namespace rmkl {
 	class ColoredConsole
 	{
@@ -53,7 +41,7 @@ namespace rmkl {
 			case Color::Purple:	return 5;
 			case Color::Yellow:	return 6;
 			case Color::White:	return 7;
-			case Color::Grey:	return grey;
+			case Color::Grey:	return 8;
 			}
 		}
 
