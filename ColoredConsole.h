@@ -2,7 +2,7 @@
 
 #include <Windows.h>
 #include <iostream>
-
+#include <mutex>
 
 #define intense FOREGROUND_INTENSITY |
 #define background * 16
@@ -15,18 +15,15 @@
 #define yellow 6
 #define white 7
 #define grey intense black
-#define underscore | COMMON_LVB_UNDERSCORE
-#define top_line | COMMON_LVB_GRID_HORIZONTAL
-#define left_line | COMMON_LVB_GRID_LVERTICAL
 
-struct ColoredConsole
+class ColoredConsole
 {
+public:
 	enum class Color {
 		Black, Blue, Green, Cyan, Red, Purple, Yellow, White, Grey
 	};
 
-	HANDLE hConsole = nullptr;
-
+public:
 	ColoredConsole()
 		: hConsole(GetStdHandle(STD_OUTPUT_HANDLE))
 	{
@@ -37,12 +34,14 @@ struct ColoredConsole
 		SetConsoleTextAttribute(hConsole, getColor(Color::White));
 	}
 
-	void cout(std::string str, Color color) const
+	void print(std::string str, Color color) const
 	{
+		std::lock_guard<std::mutex> lock(m_mutex);
 		SetConsoleTextAttribute(hConsole, getColor(color));
 		std::cout << str << "\n";
 	}
 
+private:
 	int getColor(Color color) const
 	{
 		switch (color)
@@ -58,4 +57,8 @@ struct ColoredConsole
 		case Color::Grey:	return grey;
 		}
 	}
+
+private:
+	HANDLE hConsole = nullptr;
+	mutable std::mutex m_mutex;
 };
