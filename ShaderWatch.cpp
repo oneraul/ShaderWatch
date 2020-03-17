@@ -1,11 +1,10 @@
 #include <fstream>
-
 #include "Shader.h"
-
-ColoredConsole console;
 
 int main()
 {
+	ColoredConsole console;
+
 	std::ifstream i("shaders.json");
 	nlohmann::json j;
 	i >> j;
