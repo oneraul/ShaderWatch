@@ -38,7 +38,7 @@ public:
 	{
 		std::lock_guard<std::mutex> lock(m_mutex);
 		SetConsoleTextAttribute(hConsole, getColor(color));
-		std::cout << str << "\n";
+		std::cout << str;
 	}
 
 private:
