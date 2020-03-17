@@ -8,7 +8,7 @@ class Shader
 {
 public:
 	Shader(const nlohmann::json& data, std::string suffix);
-	void compile(const ColoredConsole& console) const;
+	void compile(const ColoredConsole& console, bool printEverything = false) const;
 
 private:
 	struct Config

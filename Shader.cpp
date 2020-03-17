@@ -50,19 +50,22 @@ inline bool Shader::exists() const
 	return std::filesystem::exists(input);
 }
 
-void Shader::compile(const ColoredConsole& console) const
+void Shader::compile(const ColoredConsole& console, bool printEverything) const
 {
 	if (!exists())
 	{
-		console.print("Not found: " + input.filename().string() + "\n", ColoredConsole::Color::Red);
-			return;
+		if (printEverything)
+			console.print("Not found: " + input.filename().string() + "\n", ColoredConsole::Color::Red);
+
+		return;
 	}
 
 	for (auto& config : configs)
 	{
 		if (config.upToDate(input))
 		{
-			//console.cout("Up to date: " + config.output.filename().string() + "\n", ColoredConsole::Color::Grey);
+			if (printEverything)
+				console.print("Up to date: " + config.output.filename().string() + "\n", ColoredConsole::Color::Grey);
 		}
 		else
 		{
