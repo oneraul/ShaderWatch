@@ -2,7 +2,6 @@
 
 #include <Windows.h>
 #include <iostream>
-#include <mutex>
 
 #define intense FOREGROUND_INTENSITY |
 #define background * 16
@@ -37,7 +36,6 @@ namespace rmkl {
 
 		void print(std::string str, Color color) const
 		{
-			std::lock_guard<std::mutex> lock(m_mutex);
 			SetConsoleTextAttribute(hConsole, getColor(color));
 			std::cout << str;
 		}
@@ -61,6 +59,5 @@ namespace rmkl {
 
 	private:
 		HANDLE hConsole = nullptr;
-		mutable std::mutex m_mutex;
 	};
 }
