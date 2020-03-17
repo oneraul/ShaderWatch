@@ -22,18 +22,19 @@ namespace rmkl {
 		return dateOutput.time_since_epoch() > dateInput.time_since_epoch();
 	}
 
-	Shader::Shader(const nlohmann::json& data, std::string suffix)
+	Shader::Shader(const nlohmann::json& data, Type type)
 		: input(ROOT)
+		, type(type)
 	{
 		if (data.is_string())
 		{
 			std::string name = data;
-			input.append(name + "." + suffix);
-			configs.emplace_back(name + "_" + suffix + ".spv");
+			input.append(name + "." + suffix(type));
+			configs.emplace_back(name + "_" + suffix(type) + ".spv");
 		}
 		else
 		{
-			input.append(static_cast<std::string>(data["name"]) + "." + suffix);
+			input.append(static_cast<std::string>(data["name"]) + "." + suffix(type));
 			for (auto& variant : data["variants"])
 			{
 				std::string output = static_cast<std::string>(variant["outputFile"]);
@@ -52,7 +53,20 @@ namespace rmkl {
 		return std::filesystem::exists(input);
 	}
 
-	void Shader::compile(const ColoredConsole& console, bool printEverything) const
+	std::string Shader::suffix(Type type) const
+	{
+		switch (type)
+		{
+		case rmkl::Shader::Type::Vertex:
+			return "vert";
+		case rmkl::Shader::Type::Fragment:
+			return "frag";
+		case rmkl::Shader::Type::Compute:
+			return "comp";
+		}
+	}
+
+	void Shader::compile(shaderc::Compiler& compiler, const ColoredConsole& console, bool printEverything) const
 	{
 		if (!exists())
 		{

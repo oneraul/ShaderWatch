@@ -1,6 +1,7 @@
 #pragma once
 
-#include "json.hpp"
+#include <json.hpp>
+#include <shaderc.hpp>
 #include <filesystem>
 #include "ColoredConsole.h"
 
@@ -9,8 +10,11 @@ namespace rmkl {
 	class Shader
 	{
 	public:
-		Shader(const nlohmann::json& data, std::string suffix);
-		void compile(const ColoredConsole& console, bool printEverything = false) const;
+		enum class Type { Vertex, Fragment, Compute };
+
+	public:
+		Shader(const nlohmann::json& data, Type type);
+		void compile(shaderc::Compiler& compiler, const ColoredConsole& console, bool printEverything = false) const;
 
 	private:
 		struct Config
@@ -24,8 +28,10 @@ namespace rmkl {
 
 	private:
 		inline bool exists() const;
+		std::string suffix(Type type) const;
 
 	private:
+		const Type type;
 		std::filesystem::path input;
 		std::vector<Config> configs;
 	};
