@@ -28,10 +28,11 @@ namespace rmkl {
 
 	private:
 		inline bool exists() const;
-		std::string suffix(Type type) const;
+		std::string suffix() const;
+		shaderc_shader_kind shadercKind() const;
 
 	private:
-		const Type type;
+		const Type m_type;
 		std::filesystem::path input;
 		std::vector<Config> configs;
 	};

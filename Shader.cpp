@@ -24,17 +24,17 @@ namespace rmkl {
 
 	Shader::Shader(const nlohmann::json& data, Type type)
 		: input(ROOT)
-		, type(type)
+		, m_type(type)
 	{
 		if (data.is_string())
 		{
 			std::string name = data;
-			input.append(name + "." + suffix(type));
-			configs.emplace_back(name + "_" + suffix(type) + ".spv");
+			input.append(name + "." + suffix());
+			configs.emplace_back(name + "_" + suffix() + ".spv");
 		}
 		else
 		{
-			input.append(static_cast<std::string>(data["name"]) + "." + suffix(type));
+			input.append(static_cast<std::string>(data["name"]) + "." + suffix());
 			for (auto& variant : data["variants"])
 			{
 				std::string output = static_cast<std::string>(variant["outputFile"]);
@@ -53,16 +53,23 @@ namespace rmkl {
 		return std::filesystem::exists(input);
 	}
 
-	std::string Shader::suffix(Type type) const
+	std::string Shader::suffix() const
 	{
-		switch (type)
+		switch (m_type)
 		{
-		case rmkl::Shader::Type::Vertex:
-			return "vert";
-		case rmkl::Shader::Type::Fragment:
-			return "frag";
-		case rmkl::Shader::Type::Compute:
-			return "comp";
+		case rmkl::Shader::Type::Vertex:   return "vert";
+		case rmkl::Shader::Type::Fragment: return "frag";
+		case rmkl::Shader::Type::Compute:  return "comp";
+		}
+	}
+
+	shaderc_shader_kind Shader::shadercKind() const
+	{
+		switch (m_type)
+		{
+		case rmkl::Shader::Type::Vertex:   return shaderc_vertex_shader;
+		case rmkl::Shader::Type::Fragment: return shaderc_fragment_shader;
+		case rmkl::Shader::Type::Compute:  return shaderc_compute_shader;
 		}
 	}
 
