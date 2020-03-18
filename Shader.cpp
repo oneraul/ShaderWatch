@@ -53,14 +53,6 @@ namespace rmkl {
 				configs.emplace_back(output, defines);
 			}
 		}
-
-		if (exists())
-		{
-			std::ifstream ifs(input.string());
-			std::stringstream sstr;
-			while (ifs >> sstr.rdbuf());
-			m_source = sstr.str();
-		}
 	}
 
 	inline bool Shader::exists() const
@@ -88,7 +80,22 @@ namespace rmkl {
 		}
 	}
 
-	void Shader::compile(shaderc::Compiler& compiler, const ColoredConsole& console, bool printEverything) const
+	std::optional<Shader::Source> Shader::getSource()
+	{
+		auto lastWriteTime = std::filesystem::last_write_time(input);
+		if (!m_source || m_source->lastWriteTime < lastWriteTime)
+		{
+			std::ifstream ifs(input.string());
+			std::stringstream sstr;
+			while (ifs >> sstr.rdbuf());
+
+			m_source = { sstr.str(), lastWriteTime };
+		}
+
+		return m_source;
+	}
+
+	void Shader::compile(shaderc::Compiler& compiler, const ColoredConsole& console, bool printEverything)
 	{
 		if (!exists())
 		{
@@ -98,34 +105,39 @@ namespace rmkl {
 			return;
 		}
 
-		for (auto& config : configs)
+		if (auto source = getSource(); source && !source->compiled)
 		{
-			if (config.upToDate(input))
+			m_source->compiled = true;
+
+			for (auto& config : configs)
 			{
-				if (printEverything)
-					console.print("Up to date: " + config.output.filename().string() + "\n", ColoredConsole::Color::Grey);
-			}
-			else
-			{
-				const char* id = config.output.filename().string().c_str();
-				shaderc::SpvCompilationResult result = compiler.CompileGlslToSpv(m_source, shadercKind(), id, config.compileOptions);
-				
-				if (result.GetCompilationStatus() != shaderc_compilation_status_success)
+				if (config.upToDate(input))
 				{
-					console.print(config.output.filename().string() + "\n", ColoredConsole::Color::Red);
-					console.print(result.GetErrorMessage() + "\n", ColoredConsole::Color::Grey);
-					break;
+					if (printEverything)
+						console.print("Up to date: " + config.output.filename().string() + "\n", ColoredConsole::Color::Grey);
 				}
+				else
+				{
+					const char* id = config.output.filename().string().c_str();
+					shaderc::SpvCompilationResult result = compiler.CompileGlslToSpv(source->code, shadercKind(), id, config.compileOptions);
 
-				console.print(config.output.filename().string() + "\n", ColoredConsole::Color::Green);
-				
-				std::vector<uint32_t> spv;
-				for (uint32_t v : result)
-					spv.push_back(v);
+					if (result.GetCompilationStatus() != shaderc_compilation_status_success)
+					{
+						console.print(config.output.filename().string() + "\n", ColoredConsole::Color::Red);
+						console.print(result.GetErrorMessage() + "\n", ColoredConsole::Color::Grey);
+						continue;
+					}
 
-				auto ofs = std::fstream(config.output.string(), std::ios::out | std::ios::binary);
-				ofs.write((char*)spv.data(), spv.size()*sizeof(uint32_t));
-				ofs.close();
+					console.print(config.output.filename().string() + "\n\n", ColoredConsole::Color::Green);
+
+					std::vector<uint32_t> spv;
+					for (uint32_t v : result)
+						spv.push_back(v);
+
+					auto ofs = std::fstream(config.output.string(), std::ios::out | std::ios::binary);
+					ofs.write((char*)spv.data(), spv.size() * sizeof(uint32_t));
+					ofs.close();
+				}
 			}
 		}
 	}
