@@ -24,6 +24,7 @@ namespace rmkl {
 
 			std::filesystem::path output;
 			std::vector<std::string> defines;
+			shaderc::CompileOptions compileOptions;
 		};
 
 	private:
@@ -34,6 +35,7 @@ namespace rmkl {
 	private:
 		const Type m_type;
 		std::filesystem::path input;
+		std::string m_source;
 		std::vector<Config> configs;
 	};
 }
