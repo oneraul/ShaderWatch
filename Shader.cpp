@@ -80,7 +80,7 @@ namespace rmkl {
 		}
 	}
 
-	std::optional<Shader::Source> Shader::getSource()
+	std::optional<Shader::Source> Shader::getUpdatedSource()
 	{
 		auto lastWriteTime = std::filesystem::last_write_time(input);
 		if (!m_source || m_source->lastWriteTime < lastWriteTime)
@@ -105,7 +105,7 @@ namespace rmkl {
 			return;
 		}
 
-		if (auto source = getSource(); source && !source->compiled)
+		if (auto source = getUpdatedSource(); source && !source->compiled)
 		{
 			m_source->compiled = true;
 
@@ -118,25 +118,32 @@ namespace rmkl {
 				}
 				else
 				{
+					// compile the shader
 					const char* id = config.output.filename().string().c_str();
 					shaderc::SpvCompilationResult result = compiler.CompileGlslToSpv(source->code, shadercKind(), id, config.compileOptions);
 
+					// log errors
 					if (result.GetCompilationStatus() != shaderc_compilation_status_success)
 					{
 						console.print(config.output.filename().string() + "\n", ColoredConsole::Color::Red);
 						console.print(result.GetErrorMessage() + "\n", ColoredConsole::Color::Grey);
-						continue;
 					}
 
-					console.print(config.output.filename().string() + "\n\n", ColoredConsole::Color::Green);
+					else
+					{
+						console.print(config.output.filename().string() + "\n\n", ColoredConsole::Color::Green);
 
-					std::vector<uint32_t> spv;
-					for (uint32_t v : result)
-						spv.push_back(v);
+						// write spv to file
+						{
+							std::vector<uint32_t> spv;
+							for (uint32_t v : result)
+								spv.push_back(v);
 
-					auto ofs = std::fstream(config.output.string(), std::ios::out | std::ios::binary);
-					ofs.write((char*)spv.data(), spv.size() * sizeof(uint32_t));
-					ofs.close();
+							auto ofs = std::fstream(config.output.string(), std::ios::out | std::ios::binary);
+							ofs.write((char*)spv.data(), spv.size() * sizeof(uint32_t));
+							ofs.close();
+						}
+					}
 				}
 			}
 		}

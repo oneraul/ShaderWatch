@@ -40,7 +40,7 @@ namespace rmkl {
 		inline bool exists() const;
 		std::string suffix() const;
 		shaderc_shader_kind shadercKind() const;
-		std::optional<Shader::Source> getSource();
+		std::optional<Shader::Source> getUpdatedSource();
 
 	private:
 		const Type m_type;
