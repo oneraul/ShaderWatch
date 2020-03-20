@@ -10,15 +10,29 @@ int main()
 
 	console.print("Initializing ShaderWatch.\n\n", rmkl::ColoredConsole::Color::White);
 	{
-		std::ifstream i("shaders.json");
-		nlohmann::json j;
-		i >> j;
+		if (!std::filesystem::exists("compiled"))
+		{
+			std::filesystem::create_directory("compiled");
+			console.print("Created directory compiled.\n", rmkl::ColoredConsole::Color::Grey);
+		}
 
-		for (auto& element : j["vertex"])
+		std::string jsonFile = "shaders.json";
+		if (!std::filesystem::exists(jsonFile))
+		{
+			console.print("shaders.json not found.", rmkl::ColoredConsole::Color::Red);
+			std::cin >> jsonFile;
+			return -1;
+		}
+
+		std::ifstream i(jsonFile);
+		nlohmann::json json;
+		i >> json;
+
+		for (auto& element : json["vertex"])
 			shaders.emplace_back(element, rmkl::Shader::Type::Vertex);
-		for (auto& element : j["fragment"])
+		for (auto& element : json["fragment"])
 			shaders.emplace_back(element, rmkl::Shader::Type::Fragment);
-		for (auto& element : j["compute"])
+		for (auto& element : json["compute"])
 			shaders.emplace_back(element, rmkl::Shader::Type::Compute);
 
 		for (auto& shader : shaders)
