@@ -4,8 +4,7 @@
 
 namespace rmkl {
 
-	//static const std::string ROOT = "C:\\dev\\vkrenderer\\VkRenderer\\res\\shaders";
-	static const std::string ROOT = "C:\\Users\\oneraul\\Desktop\\shaders";
+	static const std::string ROOT = "";
 
 	Shader::Config::Config(std::string fileName, std::vector<std::string> defines = {})
 		: output(ROOT)
