@@ -355,3 +355,10 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+
+
+
+
+
+# shaderc_combined.lib is too big for normal git
+lib/shaderc_combined.lib
