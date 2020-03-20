@@ -130,7 +130,7 @@ namespace rmkl {
 
 					else
 					{
-						console.print(config.output.filename().string() + "\n\n", ColoredConsole::Color::Green);
+						console.print(config.output.filename().string() + "\n" + (printEverything ? "" : "\n"), ColoredConsole::Color::Green);
 
 						// write spv to file
 						{
