@@ -33,7 +33,6 @@ namespace rmkl {
 			std::string code;
 			std::filesystem::file_time_type lastWriteTime;
 			bool compiled = false;
-			//std::chrono::time_point<std::chrono::high_resolution_clock> lastCompilationTime;
 		};
 
 	private:
