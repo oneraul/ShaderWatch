@@ -1,21 +1,16 @@
 {
-    "vertex": [
-        "color",
-        "texture"
-    ],
+    "version": 1.2,
+    "vertex": ["color", "texture"],
 
-    "fragment": [
-        "color",
-        "texture"
-    ],
+    "fragment": ["color", "texture"],
 
     "compute": [
         {
             "name": "marchingCubes",
             "variants": [
-                {"outputFile": "marchingCubes_init_comp.spv", "defines": ["init"]},
-                {"outputFile": "marchingCubes_addSphere_comp.spv", "defines": ["add"]},
-                {"outputFile": "marchingCubes_subtractSphere_comp.spv", "defines": ["subtract"]}
+                { "outputFile": "marchingCubes_init_comp.spv", "defines": ["init"] },
+                { "outputFile": "marchingCubes_addSphere_comp.spv", "defines": ["add"] },
+                { "outputFile": "marchingCubes_subtractSphere_comp.spv", "defines": ["subtract"] }
             ]
         },
         "raycast"

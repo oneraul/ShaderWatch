@@ -13,8 +13,9 @@ namespace rmkl {
 		output.append(fileName);
 		this->defines.insert(this->defines.end(), defines.begin(), defines.end());
 
-		compileOptions.SetTargetSpirv(shaderc_spirv_version_1_3);
-		compileOptions.SetTargetEnvironment(shaderc_target_env_vulkan, shaderc_env_version_vulkan_1_2);
+		compileOptions.SetTargetSpirv(Shader::s_spirvVersion);
+		compileOptions.SetTargetEnvironment(shaderc_target_env_vulkan, Shader::s_vulkanVersion);
+
 		for (const auto& define : defines)
 			compileOptions.AddMacroDefinition(define);
 	}

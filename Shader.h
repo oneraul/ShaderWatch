@@ -17,6 +17,10 @@ namespace rmkl {
 		Shader(const nlohmann::json& data, Type type);
 		void compile(shaderc::Compiler& compiler, const ColoredConsole& console, bool printEverything = false);
 
+	public:
+		inline static shaderc_env_version s_vulkanVersion;
+		inline static shaderc_spirv_version s_spirvVersion;
+
 	private:
 		struct Config
 		{
